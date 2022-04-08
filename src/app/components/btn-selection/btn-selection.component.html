@@ -1,0 +1,4 @@
+<button [ngClass]="isSelected?'btn btn-sm btn-success':'btn btn-sm btn-danger'" (click)='selectProduct()'> 
+    <span *ngIf="!isSelected">cocher</span>
+    <span *ngIf="isSelected">décocher</span>
+</button>

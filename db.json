@@ -1,0 +1,132 @@
+{
+  "products": [
+    {
+      "nom": "bouteille",
+      "prix": 0,
+      "quantite": 9,
+      "disponible": true,
+      "selection": false,
+      "id": 13
+    },
+    {
+      "id": 14,
+      "nom": "téléphone",
+      "prix": 33,
+      "quantite": 987,
+      "isDisponible": true,
+      "isSelected": true
+    },
+    {
+      "id": 15,
+      "nom": "chargeur",
+      "prix": 4544,
+      "quantite": 665,
+      "isDisponible": true,
+      "isSelected": true
+    },
+    {
+      "id": 17,
+      "nom": "tôle",
+      "prix": 2,
+      "quantite": 3,
+      "isDisponible": false,
+      "isSelected": true
+    },
+    {
+      "id": 18,
+      "nom": "Voiture toyota",
+      "prix": 22213,
+      "quantite": 4223,
+      "isDisponible": false,
+      "isSelected": true
+    },
+    {
+      "id": 19,
+      "nom": "cahier",
+      "prix": 1232,
+      "quantite": 43,
+      "isDisponible": true,
+      "isSelected": true
+    },
+    {
+      "id": 20,
+      "nom": "clé usb",
+      "prix": 4,
+      "quantite": 98,
+      "isDisponible": false,
+      "isSelected": true
+    },
+    {
+      "id": 21,
+      "nom": "bouteille",
+      "prix": 23,
+      "quantite": 33,
+      "isDisponible": false,
+      "isSelected": true
+    },
+    {
+      "id": 22,
+      "nom": "BUS",
+      "prix": 99,
+      "quantite": 8887,
+      "isDisponible": false,
+      "isSelected": true
+    },
+    {
+      "id": 23,
+      "nom": "banc ",
+      "prix": 3,
+      "quantite": 33,
+      "isDisponible": false,
+      "isSelected": true
+    },
+    {
+      "id": 24,
+      "nom": "charette",
+      "prix": 39,
+      "quantite": 2,
+      "isDisponible": false,
+      "isSelected": true
+    },
+    {
+      "id": 25,
+      "nom": "srs",
+      "prix": 2,
+      "quantite": 5,
+      "isDisponible": false,
+      "isSelected": false
+    },
+    {
+      "id": 26,
+      "nom": "dsgfdfgd",
+      "prix": 2,
+      "quantite": 2,
+      "isDisponible": false,
+      "isSelected": false
+    },
+    {
+      "id": 27,
+      "nom": "fgdg",
+      "prix": 1,
+      "quantite": 0,
+      "isDisponible": false,
+      "isSelected": false
+    },
+    {
+      "id": 28,
+      "nom": "s",
+      "prix": 2,
+      "quantite": 0,
+      "isDisponible": false,
+      "isSelected": false
+    },
+    {
+      "nom": "bouteille",
+      "prix": 1055566,
+      "quantite": 9,
+      "disponible": true,
+      "selection": false,
+      "id": 29
+    }
+  ]
+}

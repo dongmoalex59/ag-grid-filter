@@ -1,0 +1,25 @@
+<div class="modal-header">
+    <h4 class="modal-title">Suppréssion</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <p class="h5 text-center" *ngIf="idsLenght == 1">
+        Voulez-vous vraiment supprimer l'élément:
+    </p>
+    <p class="h5 text-center" *ngIf="idsLenght > 1">
+        Voulez-vous vraiment supprimer les éléments:
+    </p>
+    <p class="h5 text-center">
+        <span *ngFor="let product of products" class="d-block"><strong>{{product.id}}</strong>:{{product.name}} </span>
+    </p>
+    <p class="mt-4 mb-0">
+        NB:
+        <span class="text-danger">Cette action est irreversible!</span>
+    </p>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="close()">Annuler</button>
+    <button type="button" class="btn btn-danger" (click)="delete()">Supprimer</button>
+</div>

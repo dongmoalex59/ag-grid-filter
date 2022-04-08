@@ -1,0 +1,12 @@
+.zoom {
+    animation: animatezoom 0.8s
+  }
+  @keyframes animatezoom {
+    from {
+      transform:scale(0)
+    }
+    to {
+      transform:scale(1.1)
+    }
+  }
+  

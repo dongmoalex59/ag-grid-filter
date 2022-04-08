@@ -1,0 +1,58 @@
+<nav class="navbar navbar-expand-sm bg-light navbar-light m-1 placeForm" >
+    <ul class="navbar-nav">
+        <li class="nav-item activeLink">
+            <button class="btn btn-sm btn-outline-info m-2" (click)="onGetAllProducts()"> Tout les produits </button>
+        </li>
+        <li class="nav-item activeLink">
+            <button class="btn btn-sm btn-outline-info m-2" (click)="onGetSelectedProducts()"> produits sélectionnés
+            </button>
+        </li>
+        <li class="nav-item activeLink">
+            <button class="btn btn-sm btn-outline-info m-2" (click)="onGetAvailableProducts()"> produits disponibles
+            </button>
+        </li>
+        <button type="button" class="btn btn-primary btn-sm btn-brand float-right m-2" (click)="onCreateProduct()">
+            <i class="fa fa-plus"></i>
+            <span>Nouveau</span>
+        </button>
+        <button type="button" class="btn btn-danger btn-brand float-right m-2" (click)="onDeleteMultiProducts()">
+            <i class="fa fa-trash"></i>
+            <span>Suppression multiple</span>
+        </button>
+        <button type="button" class="btn btn-danger btn-brand float-right m-2" (click)="onFilterProducts()">
+            <i class="fa fa-filter"></i>
+            <span> filtrer</span>
+        </button>
+        
+    </ul>  
+    <ul class="navbar navbar-nav m-1">
+        <li>
+            <form #f="ngForm" (ngSubmit)="onSearch(f.value)">
+                <input type="text" [(ngModel)]="searchValue" name="searchValue" (keyup)="quickSearch()"
+                    placeholder="Rechercher un produit">
+                <button class="btn btn-sm btn-outline-info m-2" (click)="clear()">
+                    <span >
+                        <i class="fa fa-close"></i>
+                    </span>
+                </button>
+            </form>
+        </li>
+    </ul>
+</nav>
+
+<div class="custom-agGrid-wrapper">
+    <div class="container">
+        <div *ngIf="isLoading" class="page-loader-wrapper">
+            <div class="lds-dual-ring"></div>
+            <span class="page-loading-msg mt-4 text-bold">Chargement...</span>
+        </div>
+    </div>
+    <div class="container">
+        <ag-grid-angular #agGrid class="ag-theme-alpine datatable" [columnDefs]="columnDefs" [rowData]="rowData"
+            (gridReady)="onGridReady($event)" [animateRows]="true" [pagination]="true"
+            [paginationPageSize]="paginationPageSize" [rowSelection]="rowSelection"
+            [rowMultiSelectWithClick]="rowMultiSelectWithClick" [frameworkComponents]="frameworkComponent"
+            [suppressRowClickSelection]="suppressRowClickSelection" (rowSelected)="onRowSelected($event)">
+        </ag-grid-angular>
+    </div>
+</div>

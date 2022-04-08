@@ -1,0 +1,91 @@
+<div class="modal-header">
+    <h4 class="modal-title">Filtrer</h4>
+    <button type="button" class="close btn btn-danger" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body">
+    <div class="container">
+        <form>
+            <div>
+                <select (change)="printcolumn($event)" style="margin-right: 15px;">
+                    <option value="AND" selected> ET</option>
+                    <option value="OR"> OU </option>
+                </select>
+                <button class="btn btn-outline-primary btn-sm" (click)="addSubGroup()">
+                    <li class="fa fa-plus"></li>
+                    <span>sous-groupe</span>
+                </button>
+                <button class="btn btn-outline-primary btn-sm m-3" (click)="addRule()">
+                    <li class="fa fa-plus"></li>
+                    <span>règle</span>
+                </button>
+            </div>
+            <!-- sous-groupe-->
+            <div>
+                <select (change)="printcolumn($event)" style="margin-right: 15px;">
+                    <option value="AND" selected> ET</option>
+                    <option value="OR"> OU </option>
+                </select>
+                <button class="btn btn-outline-primary btn-sm" (click)="addSubGroup()">
+                    <li class="fa fa-plus"></li>
+                    <span>sous-groupe</span>
+                </button>
+                <button class="btn btn-outline-primary btn-sm m-3" (click)="addRule()">
+                    <li class="fa fa-plus"></li>
+                    <span>règle</span>
+                </button>
+                <button class="btn btn-outline-danger btn-sm" (click)="deleteSubGroup()">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+
+            <!-- règles-->
+            <div id="formDiv">
+                <div id="formDiv0"  class="inline">
+                    <div class="form-group">
+                        <select class="form-control" id="colonne" name="colonne0" [(ngModel)]="columnValue"
+                            (change)="printcolumn($event)">
+                            <option value="" selected hidden> colonne</option>
+                            <option *ngFor="let col of columns" [value]="col"> {{col}} </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control" id="filterType0" name="filterType0" [(ngModel)]="optionValue"
+                            (change)="printOption($event)">
+                            <option value="" selected hidden> type de filtre</option>
+                            <option *ngFor="let op of filterTypes" [value]="op"> {{op}} </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="valeur0" name="valeur0" placeholder="Valeur...">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-outline-danger btn-sm" (click)="deleteRule('formDiv0')">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-danger btn-brand" (click)="resetFilter()">
+        <i class="fa fa-refresh"></i>
+        <span>Reinitialiser</span>
+    </button>
+
+    <button type="button" class="btn btn-danger btn-brand" (click)="close()">
+        <i class="fa fa-times"></i>
+        <span>Annuler</span>
+    </button>
+
+    <button type="button" class="btn btn-primary btn-brand" (click)="filter()">
+        <i class="fa fa-filter"></i>
+        <span>Filtrer</span>
+    </button>
+</div>

@@ -1,0 +1,13 @@
+<span>
+    <button type="button" class="btn btn-sm btn-danger m-2" (click)="deleteProduct()">
+        <i class="fa fa-trash"></i>
+    </button>
+    <button type="button" class="btn btn-sm btn-secondary m-2" (click)="editProduct()">
+        <i class="fa fa-edit"></i>
+    </button>
+    <button [ngClass]="isSelected?'btn btn-sm btn-success m-2':'btn btn-sm btn-danger m-2'" (click)='selectProduct()'> 
+        <span *ngIf="!isSelected">cocher</span>
+        <span *ngIf="isSelected">décocher</span>
+    </button>
+</span>
+

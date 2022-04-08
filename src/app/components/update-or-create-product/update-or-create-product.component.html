@@ -1,0 +1,91 @@
+<div class="modal-header">
+	<h4 *ngIf="mode==='CREATE'" class="modal-title">Ajouter un produit</h4>
+	<h4 *ngIf="mode==='UPDATE'" class="modal-title text-dark">Modifier un produit</h4>
+	<button type="button" class="close btn btn-danger" aria-label="Close" (click)="close()">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+
+<div class="modal-body">
+	<form [formGroup]="form" class="was-validated">
+		<div class="row">
+			<div class="form-group col-md-6 col-lg-12">
+				<label for="name">Nom du produit:</label>
+				<input formControlName="name" type="text" class="form-control" id="name" placeholder="nom" required>
+				<div class="invalid-feedback">
+					Veuillez saisir le nom du produit!
+				</div>
+			</div>
+			<div class="form-group col-md-6 col-lg-12">
+				<label for="imageUrl">Url de l'image du produit:</label>
+				<input formControlName="imageUrl" type="text" class="form-control" id="imageUrl" placeholder="Url"
+					required>
+				<div class="invalid-feedback">
+					Veuillez entrer l'url de l'image du produit!
+				</div>
+			</div>
+			<div class="form-group col-md-6 col-lg-12">
+				<label for="price">Prix du produit:</label>
+				<input formControlName="price" type="number" min="0" placeholder="0" class="form-control" id="price"
+					placeholder="prix" required>
+				<div class="invalid-feedback">
+					Veuillez saisir le prix du produit!
+				</div>
+			</div>
+			<div class="form-group col-md-6 col-lg-12">
+				<label for="quantity">Quantité:</label>
+				<input formControlName="quantity" type="number" min="0" class="form-control" id="quantity" placeholder="quantité" required>
+				<div class="invalid-feedback">
+					Veuillez saisir la quantité!
+				</div>
+			</div>
+			<div class="form-group col-md-6 col-lg-12">
+				<label for="productCode">Code du produit:</label>
+				<input formControlName="productCode" type="text" class="form-control" id="productCode" required>
+				<div class="invalid-feedback">
+					Code du produit!
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-md-6 col-lg-6 d-flex align-items-end">
+					<div class="w-100 d-flex switch-wrapper">
+						<label for="available">Available:</label>
+						<label class="switch switch-label switch-pill switch-purple float-right">
+							<input formControlName="available" type="checkbox" class="switch-input" unchecked>
+							<span data-checked="✓" data-unchecked="✕" class="switch-slider"></span>
+						</label>
+					</div>
+				</div>
+				<div class="form-group col-md-6 col-lg-6 d-flex align-items-end">
+					<div class="w-100 d-flex switch-wrapper">
+						<label for="selected">Selected:</label>
+						<label class="switch switch-label switch-pill switch-purple float-right">
+							<input formControlName="selected" type="checkbox" class="switch-input" unchecked>
+							<span data-checked="✓" data-unchecked="✕" class="switch-slider"></span>
+						</label>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</form>
+</div>
+
+<div class="modal-footer">
+	<button type="button" class="btn btn-danger btn-brand" (click)="close()">
+		<i class="fa fa-times"></i>
+		<span>Annuler</span>
+	</button>
+	<button *ngIf="mode==='CREATE'" type="button" class="btn btn-primary btn-brand" (click)="create()"
+		[disabled]="form.invalid || isLoading">
+		<i *ngIf="isLoading"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></i>
+		<i *ngIf="!isLoading" class="fa fa-plus"></i>
+		<span>Enregistrer</span>
+	</button>
+	<button *ngIf="mode==='UPDATE'" type="button" class="btn btn-primary btn-brand" (click)="update()"
+		[disabled]="form.invalid || isLoading">
+		<i *ngIf="isLoading"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></i>
+		<i *ngIf="!isLoading" class="fa fa-save"></i>
+		<span>Modifier</span>
+	</button>
+</div>
