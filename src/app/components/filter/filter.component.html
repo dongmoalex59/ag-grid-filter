@@ -8,12 +8,12 @@
 <div class="modal-body">
     <div class="container">
         <form>
-            <div>
+            <div style="margin-bottom: -16px;">
                 <select (change)="printcolumn($event)" style="margin-right: 15px;">
                     <option value="AND" selected> ET</option>
                     <option value="OR"> OU </option>
                 </select>
-                <button class="btn btn-outline-primary btn-sm" (click)="addSubGroup()">
+                <button class="btn btn-outline-primary btn-sm" (click)="addSubGroup()" style="margin-left: 2px;">
                     <li class="fa fa-plus"></li>
                     <span>sous-groupe</span>
                 </button>
@@ -23,27 +23,29 @@
                 </button>
             </div>
             <!-- sous-groupe-->
-            <div>
-                <select (change)="printcolumn($event)" style="margin-right: 15px;">
-                    <option value="AND" selected> ET</option>
-                    <option value="OR"> OU </option>
-                </select>
-                <button class="btn btn-outline-primary btn-sm" (click)="addSubGroup()">
-                    <li class="fa fa-plus"></li>
-                    <span>sous-groupe</span>
-                </button>
-                <button class="btn btn-outline-primary btn-sm m-3" (click)="addRule()">
-                    <li class="fa fa-plus"></li>
-                    <span>règle</span>
-                </button>
-                <button class="btn btn-outline-danger btn-sm" (click)="deleteSubGroup()">
-                    <i class="fa fa-trash"></i>
-                </button>
+            <div id="subGroupDiv">
+                <!--div id="subGroupDiv0">
+                    <select (change)="printcolumn($event)" style="margin-right: 15px;">
+                        <option value="AND" selected> ET</option>
+                        <option value="OR"> OU </option>
+                    </select>
+                    <button class="btn btn-outline-primary btn-sm" (click)="addSubGroup()">
+                        <li class="fa fa-plus"></li>
+                        <span>sous-groupe</span>
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm m-3" (click)="addRule()">
+                        <li class="fa fa-plus"></li>
+                        <span>règle</span>
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm" (click)="deleteSubGroup()">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div-->
             </div>
 
             <!-- règles-->
             <div id="formDiv">
-                <div id="formDiv0"  class="inline">
+                <!--div id="formDiv0" class="inline">
                     <div class="form-group">
                         <select class="form-control" id="colonne" name="colonne0" [(ngModel)]="columnValue"
                             (change)="printcolumn($event)">
@@ -66,7 +68,7 @@
                             <i class="fa fa-trash"></i>
                         </button>
                     </div>
-                </div>
+                </div-->
             </div>
         </form>
 

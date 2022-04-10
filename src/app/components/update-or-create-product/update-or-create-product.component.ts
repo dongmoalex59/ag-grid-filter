@@ -42,6 +42,8 @@ export class UpdateOrCreateProductComponent implements OnInit {
       productCode: [''],
       imageUrl: ['', Validators.required]
     });
+
+
     if (this.mode === "UPDATE") {
       this.form.patchValue({
         id: this.product.id,
