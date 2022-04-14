@@ -1,93 +1,95 @@
-import { ColDef } from "ag-grid-community";
-import { BtnActionComponent } from "../components/btn-action/btn-action.component";
-import { BtnDeleteComponent } from "../components/btn-delete/btn-delete.component";
-import { BtnSelectionComponent } from "../components/btn-selection/btn-selection.component";
-import { BtnUpdateComponent } from "../components/btn-update/btn-update.component";
-import { CheckboxComponent } from "../components/checkbox/checkbox.component";
-import { FilterComponent } from "../components/filter/filter.component";
-
-export const PRODUCT_COLUMN: ColDef[] = [
+export const ACCOUNTSTATE_COLUMNS_DEFS: any[] = [
   {
-    headerName: 'ID',
+    headerName: '',
+    valueGetter: (params: { node: { rowIndex: number } }) => {
+      return params.node.rowIndex + 1;
+    },
+    type: ['checkboxColunm', 'nonEditableColumn'],
+    filter: false,
+  },
+  {
+    headerName: '',
+    headerCheckboxSelection: true,
+    checkboxSelection: true,
+    floatingFilter: false,
+    width: 60,
+    editable: false,
+  },
+  {
+    headerName: 'id',
     field: 'id',
-    width: 120,
+    width: 70,
     editable: false,
-    floatingFilter: true,
-    filter: 'FilterComponent',
-    sortable: true
   },
   {
-    headerName: 'NOMS',
-    field: 'name',
-    editable: false,
-    floatingFilter: true,
-    filter: true,
-    sortable: true,
-    width: 150
+    headerName: 'dateEtat',
+    field: 'dateEtat',
+    cellEditor: 'dateEditorComponent',
   },
   {
-    headerName: 'IMAGE',
-    field: 'imageUrl',
-    editable: false,
-    floatingFilter: true,
-    filter: true,
-    sortable: true,
-    width: 150
+    headerName: 'libelle',
+    field: 'libelle',
   },
   {
-    headerName: 'PRIX',
-    field: 'price',
-    editable: false,
-    floatingFilter: true,
-    filter: true,
-    sortable: true,
-    width: 130
+    headerName: 'montantActuelle',
+    field: 'montantActuelle',
+    valueGetter: (params: { data: { montantActuelle: any } }) => {
+      return params.data.montantActuelle;
+    },
+    valueSetter: (params: {
+      newValue: any;
+      data: { montantActuelle: number };
+    }) => {
+      var newValNunber = Number(params.newValue);
+      if (params.data.montantActuelle !== newValNunber) {
+        params.data.montantActuelle = newValNunber;
+      }
+      return true;
+    },
   },
   {
-    headerName: 'QUANTITES',
-    field: 'quantity',
-    editable: false,
-    floatingFilter: true,
-    filter: true,
-    sortable: true,
-    width: 150
+    headerName: 'montantReserve',
+    field: 'montantReserve',
+    valueGetter: (params: { data: { montantReserve: any } }) => {
+      return params.data.montantReserve;
+    },
+    valueSetter: (params: {
+      newValue: any;
+      data: { montantReserve: number };
+    }) => {
+      var newValNunber = Number(params.newValue);
+      if (params.data.montantReserve !== newValNunber) {
+        params.data.montantReserve = newValNunber;
+      }
+      return true;
+    },
   },
   {
-    headerName: 'CODE PRODUIT',
-    field: 'productCode',
-    editable: false,
-    floatingFilter: true,
-    filter: true,
-    sortable: true,
-    width: 150
+    headerName: 'aVirer',
+    field: 'aVirer',
+    valueGetter: (params: { data: { aVirer: any } }) => {
+      return params.data.aVirer;
+    },
+    valueSetter: (params: { newValue: any; data: { aVirer: number } }) => {
+      var newValNunber = Number(params.newValue);
+      if (params.data.aVirer !== newValNunber) {
+        params.data.aVirer = newValNunber;
+      }
+      return true;
+    },
   },
   {
-    headerName: 'isDISPONIBLE',
-    field: 'available',
-    editable: false,
-    width: 140,
-    cellRendererFramework: CheckboxComponent,
-    floatingFilter: true,
-    filter: true,
-    sortable: true
+    headerName: 'compte',
+    field: 'compte',
   },
   {
-    headerName: 'isSELECTED',
-    field: 'selected',
-    editable: false,
-    width: 140,
-    cellRendererFramework: CheckboxComponent,
-    floatingFilter: true,
-    filter: true,
-    sortable: true
+    headerName: 'cmt',
+    field: 'cmt',
+    cellEditor: 'agLargeTextCellEditor',
+    cellEditorParams: {
+      rows: 5,
+      cols: 20,
+      maxLength: 200,
+    },
   },
-  {
-    headerName: 'Actions',
-    field: 'sélectionner',
-    editable: false,
-    width: 210,
-    cellRendererFramework: BtnActionComponent,
-    floatingFilter: true,
-    filter: true
-  }
 ];

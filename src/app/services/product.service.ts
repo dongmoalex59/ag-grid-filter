@@ -3,19 +3,24 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Product } from '../modeles/product.model';
+import { SearchCriterias } from '../modeles/searchCriterias.model';
 import { DeleteProductState } from '../states/deleteProduct.state';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   //lister tout les produits
-  public getAllProducts(): Observable<Product[]> {
+  public getAllProducts(
+    criterias?: Array<SearchCriterias>,
+    page?: number,
+    size?: number,
+    sort?: string
+  ): Observable<any> {
     let host = environment.host;
-    return this.http.get<Product[]>(host + '/products/all');
+    return this.http.post<any>(host + '/etat-compte/records', criterias);
   }
 
   //lister tout les produits sélectionnés
@@ -56,14 +61,18 @@ export class ProductService {
   }
 
   //supprimer un ou plusieurs produits
-  public deleteProduct(ids: number[]): Observable<DeleteProductState<Product>>[] {
+  public deleteProduct(
+    ids: number[]
+  ): Observable<DeleteProductState<Product>>[] {
     let host = environment.host;
     const products: Observable<DeleteProductState<Product>>[] = [];
     let product: Observable<DeleteProductState<Product>>;
-    ids.forEach(id => {
-      product = this.http.delete<DeleteProductState<Product>>(host + '/products/delete/' + id);
+    ids.forEach((id) => {
+      product = this.http.delete<DeleteProductState<Product>>(
+        host + '/products/delete/' + id
+      );
       products.push(product);
-    })
+    });
     return products;
   }
 }

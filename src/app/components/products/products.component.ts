@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { RowSelectedEvent } from 'ag-grid-community';
 import { catchError, map, Observable, of, startWith } from 'rxjs';
-import { PRODUCT_COLUMN } from 'src/app/config/productColumn';
 import { Product } from 'src/app/modeles/product.model';
 import { ProductService } from 'src/app/services/product.service';
 import { AppDataState, DataStateEnum } from 'src/app/states/product.state';
@@ -10,23 +9,25 @@ import { BtnDeleteComponent } from '../btn-delete/btn-delete.component';
 import { BtnSelectionComponent } from '../btn-selection/btn-selection.component';
 import { BtnUpdateComponent } from '../btn-update/btn-update.component';
 import { CheckboxComponent } from './../checkbox/checkbox.component';
-import { BsModalService, BsModalRef } from "ngx-bootstrap/modal";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { UpdateOrCreateProductComponent } from '../update-or-create-product/update-or-create-product.component';
 import { DeleteConfirmationComponent } from '../delete-confirmation/delete-confirmation.component';
 import { DeleteProductState } from 'src/app/states/deleteProduct.state';
 import { NotificationService } from 'src/app/services/notification.service';
 import { BtnActionComponent } from '../btn-action/btn-action.component';
 import { FilterComponent } from '../filter/filter.component';
+import { ACCOUNTSTATE_COLUMNS_DEFS } from 'src/app/config/productColumn';
+import { SearchCriterias } from 'src/app/modeles/searchCriterias.model';
 
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
-  styleUrls: ['./products.component.css']
+  styleUrls: ['./products.component.css'],
 })
 export class ProductsComponent implements OnInit {
-  @ViewChild("agGrid") agGrid?: AgGridAngular;
+  @ViewChild('agGrid') agGrid?: AgGridAngular;
 
-  public columnDefs = PRODUCT_COLUMN;
+  public columnDefs = ACCOUNTSTATE_COLUMNS_DEFS;
   public rowData?: Product[] = [];
   public gridApi: any;
   public columnApi: any;
@@ -35,11 +36,15 @@ export class ProductsComponent implements OnInit {
   public pagination: boolean = true;
   public suppressRowClickSelection: boolean = true;
   public rowMultiSelectWithClick: boolean = true;
-  public paginationTable: number[] = [10, 20, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 2000, 4000, 6000, 8000, 10000];
+  public paginationTable: number[] = [
+    10, 20, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 2000, 4000, 6000, 8000,
+    10000,
+  ];
   public paginationPageSize: number = 10;
   public defaultPageNumber: number = 0;
   public products: Observable<AppDataState<Product[]>> | null = null;
-  public deleteProducts: Observable<DeleteProductState<Product>>[] | null = null;
+  public deleteProducts: Observable<DeleteProductState<Product>>[] | null =
+    null;
   public searchValue: string = '';
   public isLoading: boolean = false;
   public isLoader: boolean = false;
@@ -52,18 +57,17 @@ export class ProductsComponent implements OnInit {
     BtnDeleteComponent,
     BtnUpdateComponent,
     BtnActionComponent,
-    FilterComponent
+    FilterComponent,
   };
 
   constructor(
     private productService: ProductService,
     private bsModalService: BsModalService,
     private notificationService: NotificationService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.onGetAllProducts();
-    
   }
 
   public onGridReady(params: any): void {
@@ -82,7 +86,7 @@ export class ProductsComponent implements OnInit {
   public refreshData(content: Product[]): void {
     this.gridApi.applyTransaction({
       add: content,
-      addIndex: this.gridApi.paginationGetRowCount() + 1
+      addIndex: this.gridApi.paginationGetRowCount() + 1,
     });
   }
 
@@ -91,26 +95,27 @@ export class ProductsComponent implements OnInit {
     this.quickSearch();
   }
 
-  public onGetAllProducts() {
-    this.products = this.productService.getAllProducts().pipe(
-      map(data => {
-        return ({ DataState: DataStateEnum.LOADER, data: data })
+  public onGetAllProducts(criterias: SearchCriterias[] = []) {
+    this.products = this.productService.getAllProducts(criterias).pipe(
+      map((data) => {
+        return { DataState: DataStateEnum.LOADER, data: data };
       }),
       startWith({ DataState: DataStateEnum.LOADING }),
-      catchError(err => of({ DataState: DataStateEnum.ERROR, errorMessage: err.message }))
+      catchError((err) =>
+        of({ DataState: DataStateEnum.ERROR, errorMessage: err.message })
+      )
     );
-    this.products.subscribe(res => {
+    this.products.subscribe((res) => {
       if (res) {
         if (res.DataState == DataStateEnum.LOADER) {
           this.isLoader = true;
           this.isLoading = false;
-          this.rowData = res.data
-        }
-        else if (res.DataState == DataStateEnum.LOADING) {
+          this.rowData = res.data;
+          console.log(res.data);
+        } else if (res.DataState == DataStateEnum.LOADING) {
           this.isLoading = true;
           this.isLoader = false;
-        }
-        else if (res.DataState == DataStateEnum.ERROR) {
+        } else if (res.DataState == DataStateEnum.ERROR) {
           this.isError = true;
           this.isLoader = false;
           this.isLoading = false;
@@ -122,22 +127,22 @@ export class ProductsComponent implements OnInit {
 
   public onGetSelectedProducts() {
     this.products = this.productService.getSelectedProducts().pipe(
-      map(data => ({ DataState: DataStateEnum.LOADER, data: data })),
+      map((data) => ({ DataState: DataStateEnum.LOADER, data: data })),
       startWith({ DataState: DataStateEnum.LOADING }),
-      catchError(err => of({ DataState: DataStateEnum.ERROR, errorMessage: err.message }))
+      catchError((err) =>
+        of({ DataState: DataStateEnum.ERROR, errorMessage: err.message })
+      )
     );
-    this.products.subscribe(res => {
+    this.products.subscribe((res) => {
       if (res) {
         if (res.DataState == DataStateEnum.LOADER) {
           this.isLoader = true;
           this.isLoading = false;
           this.rowData = res.data;
-        }
-        else if (res.DataState == DataStateEnum.LOADING) {
+        } else if (res.DataState == DataStateEnum.LOADING) {
           this.isLoading = true;
           this.isLoader = false;
-        }
-        else if (res.DataState == DataStateEnum.ERROR) {
+        } else if (res.DataState == DataStateEnum.ERROR) {
           this.isError = true;
           this.isLoader = false;
           this.isLoading = false;
@@ -149,22 +154,22 @@ export class ProductsComponent implements OnInit {
 
   public onGetAvailableProducts() {
     this.products = this.productService.getAvailableProducts().pipe(
-      map(data => ({ DataState: DataStateEnum.LOADER, data: data })),
+      map((data) => ({ DataState: DataStateEnum.LOADER, data: data })),
       startWith({ DataState: DataStateEnum.LOADING }),
-      catchError(err => of({ DataState: DataStateEnum.ERROR, errorMessage: err.message }))
+      catchError((err) =>
+        of({ DataState: DataStateEnum.ERROR, errorMessage: err.message })
+      )
     );
-    this.products.subscribe(res => {
+    this.products.subscribe((res) => {
       if (res) {
         if (res.DataState == DataStateEnum.LOADER) {
           this.isLoader = true;
           this.isLoading = false;
-          this.rowData = res.data
-        }
-        else if (res.DataState == DataStateEnum.LOADING) {
+          this.rowData = res.data;
+        } else if (res.DataState == DataStateEnum.LOADING) {
           this.isLoading = true;
           this.isLoader = false;
-        }
-        else if (res.DataState == DataStateEnum.ERROR) {
+        } else if (res.DataState == DataStateEnum.ERROR) {
           this.isError = true;
           this.isLoader = false;
           this.isLoading = false;
@@ -176,22 +181,23 @@ export class ProductsComponent implements OnInit {
 
   public onSearch(dataForm: any) {
     this.products = this.productService.searchProduct(this.searchValue).pipe(
-      map(data => ({ DataState: DataStateEnum.LOADER, data: data })),
+      map((data) => ({ DataState: DataStateEnum.LOADER, data: data })),
       startWith({ DataState: DataStateEnum.LOADING }),
-      catchError(err => of({ DataState: DataStateEnum.ERROR, errorMessage: err.message }))
+      catchError((err) =>
+        of({ DataState: DataStateEnum.ERROR, errorMessage: err.message })
+      )
     );
-    this.products.subscribe(res => {
+    this.products.subscribe((res) => {
       if (res) {
         if (res.DataState == DataStateEnum.LOADER) {
           this.isLoader = true;
           this.isLoading = false;
-          this.rowData = res.data
-        }
-        else if (res.DataState == DataStateEnum.LOADING) {
+          this.rowData = res.data;
+          this.gridApi.setRowData(this.rowData);
+        } else if (res.DataState == DataStateEnum.LOADING) {
           this.isLoading = true;
           this.isLoader = false;
-        }
-        else if (res.DataState == DataStateEnum.ERROR) {
+        } else if (res.DataState == DataStateEnum.ERROR) {
           this.isError = true;
           this.isLoader = false;
           this.isLoading = false;
@@ -203,16 +209,21 @@ export class ProductsComponent implements OnInit {
 
   public onCreateProduct() {
     const initialState = { mode: 'CREATE' };
-    const modalRef: BsModalRef = this.bsModalService.show(UpdateOrCreateProductComponent, { initialState, class: 'modal-purple modal-lg' });
+    const modalRef: BsModalRef = this.bsModalService.show(
+      UpdateOrCreateProductComponent,
+      { initialState, class: 'modal-purple modal-lg' }
+    );
     modalRef.onHidden.subscribe(() => {
       const isCreated: boolean = modalRef.content.isCreated;
       const isNotCreated: boolean = modalRef.content.isNotCreated;
       if (isCreated) {
         this.onGetAllProducts();
-        this.notificationService.success('le produit a été ajouté avec succès!');
+        this.notificationService.success(
+          'le produit a été ajouté avec succès!'
+        );
       }
       if (isNotCreated) {
-        this.notificationService.danger('L\'ajout du produit a échoué!');
+        this.notificationService.danger("L'ajout du produit a échoué!");
       }
     });
   }
@@ -238,42 +249,62 @@ export class ProductsComponent implements OnInit {
     const products: Product[] = [];
     const ids: any[] = [];
     const noms: any[] = [];
-    this.getDisplayedRows().forEach(row => {
+    this.getDisplayedRows().forEach((row) => {
       products.push(row.data);
     });
-    products.forEach(p => {
+    products.forEach((p) => {
       ids.push(p.id);
       noms.push(p.name);
     });
     const initialState = { IDS: ids, names: noms, products: products };
-    const modalRef: BsModalRef = this.bsModalService.show(DeleteConfirmationComponent, { initialState, class: 'modal-purple modal-lg' });
+    const modalRef: BsModalRef = this.bsModalService.show(
+      DeleteConfirmationComponent,
+      { initialState, class: 'modal-purple modal-lg' }
+    );
     modalRef.onHidden.subscribe(() => {
       const agree: boolean = modalRef.content.agree;
       if (agree) {
-        this.productService.deleteProduct(ids).forEach(product$ => {
-          product$.toPromise().then(data => {
+        this.productService.deleteProduct(ids).forEach((product$) => {
+          product$.toPromise().then((data) => {
             if (data) {
               //
             }
           });
         });
-        this.productService.getAllProducts().subscribe(data => {
+        this.productService.getAllProducts().subscribe((data) => {
           this.gridApi.setRowData(data);
         });
-        this.notificationService.success('les produits ont été supprimé avec succès!');
+        this.notificationService.success(
+          'les produits ont été supprimé avec succès!'
+        );
       }
     });
   }
 
   public onRowSelected(event: RowSelectedEvent) {
-    this.productService.selectedProduct(event.data).subscribe(p => {
-      this.productService.getAllProducts().subscribe(data => {
+    this.productService.selectedProduct(event.data).subscribe((p) => {
+      this.productService.getAllProducts().subscribe((data) => {
         this.rowData = data;
-      })
+      });
     });
   }
 
   public onFilterProducts() {
-    const modalRef: BsModalRef = this.bsModalService.show(FilterComponent, { class: 'modal-purple modal-lg' });
+    var columns: any[] = [
+      { name: 'id', type: 'text' },
+      { name: 'name', type: 'text' },
+      { name: 'imageUrl', type: 'text' },
+      { name: 'price', type: 'number' },
+      { name: 'quantity', type: 'text' },
+      { name: 'productCode', type: 'text' },
+      { name: 'available', type: 'text' },
+      { name: 'selected', type: 'text' },
+      { name: 'date', type: 'date' },
+    ];
+    const initialState = { columns: columns, modal: this };
+    const modalRef: BsModalRef = this.bsModalService.show(FilterComponent, {
+      class: 'modal-purple modal-lg',
+      initialState,
+    });
   }
 }
