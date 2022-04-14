@@ -11,12 +11,11 @@ import { FILTER_DATE_TYPE, FILTER_TEXT_TYPE } from './adds/filterTypeValue';
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.css'],
 })
-export class FilterComponent implements OnInit {
+export class FilterComponent<T> implements OnInit {
   public filterTextTypes = FILTER_TEXT_TYPE;
   public filterDateTypes = FILTER_DATE_TYPE;
 
   @Input() columns: any[] = [];
-  @Input() modal!: any;
 
   public criterias: any[] = [];
 
@@ -25,18 +24,17 @@ export class FilterComponent implements OnInit {
 
   public products: Observable<AppDataState<Product[]>> | null = null;
 
-  constructor(public modalService: BsModalService) {}
+  constructor(
+    public modalService: BsModalService,
+    private productService: ProductService,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {}
 
   public filter() {
     this.setCriterias();
-    if (this.criterias.length == 0) {
-      this.close();
-      return;
-    }
-    //tous les models doivent avoir comme methode record une methi=ode avec un nom pareil
-    this.modal.onGetAllProducts(this.criterias);
+    this.close();
   }
 
   /**

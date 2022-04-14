@@ -306,5 +306,12 @@ export class ProductsComponent implements OnInit {
       class: 'modal-purple modal-lg',
       initialState,
     });
+
+    modalRef.onHidden.subscribe(() => {
+      const criterias = modalRef.content.criterias;
+      if (criterias.length > 0) {
+        this.onGetAllProducts(criterias);
+      }
+    });
   }
 }
