@@ -18,6 +18,7 @@ import { BtnActionComponent } from '../btn-action/btn-action.component';
 import { FilterComponent } from '../filter/filter.component';
 import { ACCOUNTSTATE_COLUMNS_DEFS } from 'src/app/config/productColumn';
 import { SearchCriterias } from 'src/app/modeles/searchCriterias.model';
+import { ACCOUNTSTATE_COLUMNS_FILTER } from 'src/app/config/productColumnFilter';
 
 @Component({
   selector: 'app-products',
@@ -290,18 +291,7 @@ export class ProductsComponent implements OnInit {
   }
 
   public onFilterProducts() {
-    var columns: any[] = [
-      { name: 'id', type: 'text' },
-      { name: 'name', type: 'text' },
-      { name: 'imageUrl', type: 'text' },
-      { name: 'price', type: 'number' },
-      { name: 'quantity', type: 'text' },
-      { name: 'productCode', type: 'text' },
-      { name: 'available', type: 'text' },
-      { name: 'selected', type: 'text' },
-      { name: 'date', type: 'date' },
-    ];
-    const initialState = { columns: columns, modal: this };
+    const initialState = { columns: ACCOUNTSTATE_COLUMNS_FILTER, modal: this };
     const modalRef: BsModalRef = this.bsModalService.show(FilterComponent, {
       class: 'modal-purple modal-lg',
       initialState,

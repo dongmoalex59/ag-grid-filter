@@ -37,6 +37,7 @@ export class FilterComponent implements OnInit {
     }
     //tous les models doivent avoir comme methode record une methi=ode avec un nom pareil
     this.modal.onGetAllProducts(this.criterias);
+    this.criterias = [];
   }
 
   /**
