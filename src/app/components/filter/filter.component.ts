@@ -5,7 +5,11 @@ import { Product } from 'src/app/modeles/product.model';
 import { NotificationService } from 'src/app/services/notification.service';
 import { ProductService } from 'src/app/services/product.service';
 import { AppDataState, DataStateEnum } from 'src/app/states/product.state';
-import { FILTER_DATE_TYPE, FILTER_TEXT_TYPE } from './adds/filterTypeValue';
+import {
+  FILTER_DATE_TYPE,
+  FILTER_NUMBER_TYPE,
+  FILTER_TEXT_TYPE,
+} from './adds/filterTypeValue';
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
@@ -14,6 +18,7 @@ import { FILTER_DATE_TYPE, FILTER_TEXT_TYPE } from './adds/filterTypeValue';
 export class FilterComponent implements OnInit {
   public filterTextTypes = FILTER_TEXT_TYPE;
   public filterDateTypes = FILTER_DATE_TYPE;
+  public filterNubmerTypes = FILTER_NUMBER_TYPE;
 
   @Input() columns: any[] = [];
   @Input() modal!: any;
@@ -189,7 +194,11 @@ export class FilterComponent implements OnInit {
     selectField1?.appendChild(selectList1);
 
     //Create and append the options
-    this.pushToSelect(selectList1, this.filterTextTypes);
+    let filter = [];
+    if (elt.type === 'date') filter = this.filterDateTypes;
+    else if (elt.type === 'number') filter = this.filterNubmerTypes;
+    else filter = this.filterTextTypes;
+    this.pushToSelect(selectList1, filter);
 
     //div3
     const inputField = document.createElement('div');
@@ -224,6 +233,8 @@ export class FilterComponent implements OnInit {
           var select2 = document.getElementById(idSelect2) as HTMLSelectElement;
           if (elt.type === 'date') {
             this.pushToSelect(select2, this.filterDateTypes);
+          } else if (elt.type === 'number') {
+            this.pushToSelect(select2, this.filterNubmerTypes);
           } else {
             this.pushToSelect(select2, this.filterTextTypes);
           }
