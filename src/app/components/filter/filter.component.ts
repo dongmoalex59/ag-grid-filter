@@ -194,6 +194,9 @@ export class FilterComponent implements OnInit {
     selectList1.id = idSelect2;
     selectList1.classList.add('form-control');
     selectField1?.appendChild(selectList1);
+    selectField1.onchange = () => {
+      this.updateQuery();
+    };
 
     //Create and append the options
     let filter = [];
@@ -203,16 +206,19 @@ export class FilterComponent implements OnInit {
     this.pushToSelect(selectList1, filter);
 
     //div3
-    const inputField = document.createElement('div');
+    const inputField = document.createElement('div') as HTMLDivElement;
     inputField.classList.add('form-group');
 
-    const input = document.createElement('input');
+    const input = document.createElement('input') as HTMLInputElement;
     input.classList.add('form-control');
     input.placeholder = 'Valeur...';
     input.name = 'valeur' + this.rulesCompt;
     let idInput = 'valeur' + this.rulesCompt;
     input.id = idInput;
     input.type = elt.type;
+    input.oninput = () => {
+      this.updateQuery();
+    };
     inputField.appendChild(input);
 
     //creation d'un champ caché pour la conservation du ET ou OU
@@ -243,6 +249,7 @@ export class FilterComponent implements OnInit {
           }
         }
       });
+      this.updateQuery();
     };
 
     //div4
@@ -259,16 +266,30 @@ export class FilterComponent implements OnInit {
     inputField1.appendChild(button);
     button.onclick = () => this.deleteRule(id);
 
+    const labelOperator = document.createElement('label') as HTMLLabelElement;
+    labelOperator.textContent =
+      sel.options[sel.selectedIndex].value === '0' ? 'ET' : 'OU';
+    labelOperator.setAttribute(
+      'style',
+      sel.options[sel.selectedIndex].value === '0'
+        ? 'color:blue;'
+        : 'color:green;'
+    );
+
+    if (div!.childElementCount === 0) labelOperator.textContent = '!!!!';
+    subDiv.appendChild(labelOperator);
     subDiv?.appendChild(selectField);
     subDiv?.appendChild(selectField1);
     subDiv?.appendChild(inputField);
     subDiv?.appendChild(inputField1);
     div?.appendChild(subDiv);
+    this.updateQuery();
   }
 
   public deleteRule(id: string) {
     const subDiv = document.getElementById(id);
     subDiv?.parentElement?.removeChild(subDiv);
+    this.updateQuery();
   }
 
   public deleteSubGroup(id: string) {
@@ -300,5 +321,50 @@ export class FilterComponent implements OnInit {
       option.text = element.name;
       select.appendChild(option);
     });
+  }
+
+  /**
+   * updateQuery
+   */
+  public updateQuery() {
+    let p = document.getElementById('query') as HTMLParagraphElement;
+    if (p.style.display !== 'none') {
+      let p = document.getElementById('query') as HTMLParagraphElement;
+      let content = 'SELECT * FROM ??? WHERE ';
+      this.setCriterias();
+
+      for (let i = 0; i < this.criterias.length; i++) {
+        const elt = this.criterias[i];
+        if (i === 0) {
+          content += elt.key + ' ' + elt.operation + ' `' + elt.value + '`';
+        } else {
+          let op = elt.orPredicate ? 'OR' : 'AND';
+          content +=
+            ' ' +
+            op +
+            ' ' +
+            elt.key +
+            ' ' +
+            elt.operation +
+            ' `' +
+            elt.value +
+            '`';
+        }
+      }
+      content += ';';
+      p.textContent = content;
+      this.criterias = [];
+    }
+  }
+
+  /**
+   * hide
+   */
+  public hide() {
+    let p = document.getElementById('query') as HTMLParagraphElement;
+    p.style.display = p.style.display === 'none' ? 'inline' : 'none';
+    let btn = document.getElementById('btnbtn') as HTMLButtonElement;
+    btn.textContent = p.style.display === 'none' ? 'Show Query' : 'Hide Query';
+    this.updateQuery();
   }
 }
