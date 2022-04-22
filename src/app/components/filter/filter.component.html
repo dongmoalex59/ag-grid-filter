@@ -14,9 +14,9 @@
   <div class="container">
     <form>
       <div style="margin-bottom: -16px">
-        <select style="margin-right: 15px">
-          <option value="AND" selected>ET</option>
-          <option value="OR">OU</option>
+        <select style="margin-right: 15px" id="operator0">
+          <option value="0" selected>ET</option>
+          <option value="1">OU</option>
         </select>
         <button
           class="btn btn-outline-primary btn-sm"
@@ -26,7 +26,10 @@
           <li class="fa fa-plus"></li>
           <span>sous-groupe</span>
         </button>
-        <button class="btn btn-outline-primary btn-sm m-3" (click)="addRule()">
+        <button
+          class="btn btn-outline-primary btn-sm m-3"
+          (click)="addRule('operator0')"
+        >
           <li class="fa fa-plus"></li>
           <span>règle</span>
         </button>

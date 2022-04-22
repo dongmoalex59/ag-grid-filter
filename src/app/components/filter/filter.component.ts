@@ -70,7 +70,7 @@ export class FilterComponent implements OnInit {
           operation:
             selectFilterType.options[selectFilterType.selectedIndex].value,
           value: inputFieldValue.value,
-          orPredicate: false,
+          orPredicate: inputFieldTypeValue.value === '0' ? false : true,
         };
         this.criterias.push(element);
       }
@@ -97,6 +97,8 @@ export class FilterComponent implements OnInit {
     AndOption.value = '0';
     AndOption.text = 'ET';
     selectField.appendChild(AndOption);
+    let selectId = 'operator' + this.subGroupCompt;
+    selectField.id = selectId;
 
     //Option OR
     var OrOption = document.createElement('option');
@@ -132,7 +134,7 @@ export class FilterComponent implements OnInit {
     span2.textContent = 'règle';
     button2.appendChild(li2);
     button2.appendChild(span2);
-    button2.onclick = () => this.addRule();
+    button2.onclick = () => this.addRule(selectId);
 
     //bouton de suppression de sous-groupe
     const button3 = document.createElement('button');
@@ -153,7 +155,7 @@ export class FilterComponent implements OnInit {
     subGroupDiv?.appendChild(div);
   }
 
-  public addRule() {
+  public addRule(ids: string) {
     this.rulesCompt = this.rulesCompt + 1;
 
     const div = document.getElementById('formDiv');
@@ -218,7 +220,8 @@ export class FilterComponent implements OnInit {
     inputHidden.classList.add('form-control');
     inputHidden.id = 'hidden' + this.rulesCompt;
     inputHidden.type = 'hidden';
-    inputHidden.value = 'AND';
+    let sel = document.getElementById(ids) as HTMLSelectElement;
+    inputHidden.value = sel.options[sel.selectedIndex].value;
 
     inputField.appendChild(inputHidden);
 
