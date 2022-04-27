@@ -71,6 +71,7 @@ export class FilterComponent implements OnInit {
             selectFilterType.options[selectFilterType.selectedIndex].value,
           value: inputFieldValue.value,
           orPredicate: inputFieldTypeValue.value === '0' ? false : true,
+          operatorGroup: 'ou' + i,
         };
         this.criterias.push(element);
       }
@@ -107,45 +108,23 @@ export class FilterComponent implements OnInit {
     selectField.appendChild(OrOption);
 
     //bouton d'ajout de sous-groupe
-    const button1 = document.createElement('button');
-    button1.classList.add('btn');
-    button1.classList.add('btn-outline-primary');
-    button1.classList.add('btn-sm');
-    button1.style.marginLeft = '15px';
-    const li1 = document.createElement('li');
-    li1.classList.add('fa');
-    li1.classList.add('fa-plus');
+    const button1 = this.createButton('fa-plus');
     const span1 = document.createElement('span');
     span1.textContent = 'sous-groupe';
-    button1.appendChild(li1);
     button1.appendChild(span1);
     button1.onclick = () => this.addSubGroup();
 
     //bouton d'ajout de règle
-    const button2 = document.createElement('button');
-    button2.classList.add('btn');
-    button2.classList.add('btn-outline-primary');
-    button2.classList.add('btn-sm');
+    const button2 = this.createButton('fa-plus');
     button2.style.marginLeft = '15px';
-    const li2 = document.createElement('li');
-    li2.classList.add('fa');
-    li2.classList.add('fa-plus');
     const span2 = document.createElement('span');
     span2.textContent = 'règle';
-    button2.appendChild(li2);
     button2.appendChild(span2);
     button2.onclick = () => this.addRule(selectId);
 
     //bouton de suppression de sous-groupe
-    const button3 = document.createElement('button');
-    button3.classList.add('btn');
-    button3.classList.add('btn-outline-danger');
-    button3.classList.add('btn-sm');
+    const button3 = this.createButton('fa-trash');
     button3.style.marginLeft = '15px';
-    const li3 = document.createElement('li');
-    li3.classList.add('fa');
-    li3.classList.add('fa-trash');
-    button3.appendChild(li3);
     button3.onclick = () => this.deleteSubGroup(id);
 
     div.appendChild(selectField);
@@ -157,115 +136,74 @@ export class FilterComponent implements OnInit {
 
   public addRule(ids: string) {
     this.rulesCompt = this.rulesCompt + 1;
+    let id = 'formDiv' + this.rulesCompt;
 
     const div = document.getElementById('formDiv');
+    //creation de la division globale
     const subDiv = document.createElement('div');
     subDiv.style.display = 'flex';
     subDiv.style.justifyContent = 'space-between';
     subDiv.style.margin = '2px';
-
-    subDiv.id = 'formDiv' + this.rulesCompt;
-    let id = 'formDiv' + this.rulesCompt;
-
-    const selectField = document.createElement('div');
+    subDiv.id = id;
+    //creation de la diision pour l'ajout du
+    const selectField = document.createElement('div') as HTMLDivElement;
     selectField.classList.add('form-group');
 
-    var selectList = document.createElement('select');
-    selectList.name = 'colonne' + this.rulesCompt;
+    //select pour les attributs du filtre
     var idSelect = 'colonne' + this.rulesCompt;
-    selectList.id = idSelect;
-    selectList.classList.add('form-control');
+    var selectList = this.createSelect(idSelect, idSelect);
     selectField?.appendChild(selectList);
-
-    //Create and append the options
-
     //Create and append the options
     this.pushToSelectField(selectList, this.columns);
 
-    // div2
-
+    // creation de la division pour le champ de selection des attributs
+    //configuration de la valeur initial lors de la creation d'un nouveau champ du filtre
     let elt = this.columns[0];
     const selectField1 = document.createElement('div');
     selectField1.classList.add('form-group');
-
-    var selectList1 = document.createElement('select');
+    //select pour les operation de filtre
     var idSelect2 = 'filterType' + this.rulesCompt;
-    selectList1.name = 'filterType' + this.rulesCompt;
-    selectList1.id = idSelect2;
-    selectList1.classList.add('form-control');
+    var selectList1 = this.createSelect(idSelect2, idSelect2);
+    selectField1.onchange = () => this.updateQuery();
     selectField1?.appendChild(selectList1);
-    selectField1.onchange = () => {
-      this.updateQuery();
-    };
 
-    //Create and append the options
+    //Choix des operations du filtre en fonciton du type de d'attribut choisis
     let filter = [];
     if (elt.type === 'date') filter = this.filterDateTypes;
     else if (elt.type === 'number') filter = this.filterNubmerTypes;
     else filter = this.filterTextTypes;
     this.pushToSelect(selectList1, filter);
 
-    //div3
+    //creation de la division pour le champ de valeur
     const inputField = document.createElement('div') as HTMLDivElement;
     inputField.classList.add('form-group');
 
-    const input = document.createElement('input') as HTMLInputElement;
-    input.classList.add('form-control');
-    input.placeholder = 'Valeur...';
-    input.name = 'valeur' + this.rulesCompt;
+    //creation du input pour la sasie des valeur de recherches
     let idInput = 'valeur' + this.rulesCompt;
-    input.id = idInput;
-    input.type = elt.type;
+    const input = this.createInput(idInput, '', elt.type, 'Valeur...');
     input.oninput = () => {
       this.updateQuery();
     };
     inputField.appendChild(input);
 
     //creation d'un champ caché pour la conservation du ET ou OU
-    const inputHidden = document.createElement('input');
-    inputHidden.classList.add('form-control');
-    inputHidden.id = 'hidden' + this.rulesCompt;
-    inputHidden.type = 'hidden';
     let sel = document.getElementById(ids) as HTMLSelectElement;
-    inputHidden.value = sel.options[sel.selectedIndex].value;
-
+    const inputHidden = this.createInput(
+      'hidden' + this.rulesCompt,
+      sel.options[sel.selectedIndex].value,
+      'hidden'
+    );
     inputField.appendChild(inputHidden);
-
-    //add action to select field value
-    selectList.onchange = () => {
-      var input = document.getElementById(idInput);
-      var select = document.getElementById(idSelect) as HTMLSelectElement;
-      let value = select?.options[select.selectedIndex].value;
-      this.columns.forEach((elt) => {
-        if (elt.name == value) {
-          input?.setAttribute('type', elt.type);
-          var select2 = document.getElementById(idSelect2) as HTMLSelectElement;
-          if (elt.type === 'date') {
-            this.pushToSelect(select2, this.filterDateTypes);
-          } else if (elt.type === 'number') {
-            this.pushToSelect(select2, this.filterNubmerTypes);
-          } else {
-            this.pushToSelect(select2, this.filterTextTypes);
-          }
-        }
-      });
-      this.updateQuery();
-    };
 
     //div4
     const inputField1 = document.createElement('div');
     inputField1.classList.add('form-group');
-    const button = document.createElement('button');
-    button.classList.add('btn');
-    button.classList.add('btn-outline-danger');
-    button.classList.add('btn-sm');
-    const i = document.createElement('i');
-    i.classList.add('fa');
-    i.classList.add('fa-trash');
-    button.appendChild(i);
+    //boutton de suppression des champs de règles
+    const button = this.createButton('fa-trash');
     inputField1.appendChild(button);
     button.onclick = () => this.deleteRule(id);
 
+    //creation du label d'indication sur le type d'operateur d'une règle
     const labelOperator = document.createElement('label') as HTMLLabelElement;
     labelOperator.textContent =
       sel.options[sel.selectedIndex].value === '0' ? 'ET' : 'OU';
@@ -275,7 +213,9 @@ export class FilterComponent implements OnInit {
         ? 'color:blue;'
         : 'color:green;'
     );
-
+    //action de mise a jour du champ de valeur en fonction du type d'attribut
+    selectList.onchange = () =>
+      this.onSelectColumn(idInput, idSelect, idSelect2);
     if (div!.childElementCount === 0) labelOperator.textContent = '!!!!';
     subDiv.appendChild(labelOperator);
     subDiv?.appendChild(selectField);
@@ -366,5 +306,75 @@ export class FilterComponent implements OnInit {
     let btn = document.getElementById('btnbtn') as HTMLButtonElement;
     btn.textContent = p.style.display === 'none' ? 'Show Query' : 'Hide Query';
     this.updateQuery();
+  }
+
+  /**
+   * createInput
+   */
+  public createInput(
+    id: string,
+    value: string,
+    type: string,
+    placeholder: string = ''
+  ): HTMLInputElement {
+    //creation d'un champ caché pour la conservation du ET ou OU
+    const inputField = document.createElement('input') as HTMLInputElement;
+    inputField.classList.add('form-control');
+    inputField.id = id;
+    inputField.type = type;
+    inputField.value = value;
+    inputField.placeholder = placeholder;
+    return inputField;
+  }
+
+  /**
+   * createDivElement
+   */
+  public createSelect(id: string, name: string): HTMLSelectElement {
+    var selectList1 = document.createElement('select') as HTMLSelectElement;
+    selectList1.name = name;
+    selectList1.id = id;
+    selectList1.classList.add('form-control');
+    return selectList1;
+  }
+
+  /**
+   * onSelectColumn
+   */
+  public onSelectColumn(idInput: string, idSelect: string, idSelect2: string) {
+    var input = document.getElementById(idInput);
+    var select = document.getElementById(idSelect) as HTMLSelectElement;
+    let value = select?.options[select.selectedIndex].value;
+    this.columns.forEach((elt) => {
+      if (elt.name == value) {
+        input?.setAttribute('type', elt.type);
+        var select2 = document.getElementById(idSelect2) as HTMLSelectElement;
+        if (elt.type === 'date') {
+          this.pushToSelect(select2, this.filterDateTypes);
+        } else if (elt.type === 'number') {
+          this.pushToSelect(select2, this.filterNubmerTypes);
+        } else {
+          this.pushToSelect(select2, this.filterTextTypes);
+        }
+      }
+    });
+    this.updateQuery();
+  }
+
+  /**
+   * createButton
+   */
+  public createButton(icon: string): HTMLButtonElement {
+    const button = document.createElement('button') as HTMLButtonElement;
+    button.classList.add('btn');
+    button.classList.add(
+      icon.endsWith('trash') ? 'btn-outline-danger' : 'btn-outline-primary'
+    );
+    button.classList.add('btn-sm');
+    const i = document.createElement('i');
+    i.classList.add('fa');
+    i.classList.add(icon);
+    button.appendChild(i);
+    return button;
   }
 }
