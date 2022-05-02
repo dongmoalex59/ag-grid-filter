@@ -38,8 +38,11 @@ export class FilterComponent implements OnInit {
       this.close();
       return;
     }
+
+    console.log(this.criterias);
+
     //tous les models doivent avoir comme methode record une methi=ode avec un nom pareil
-    // this.modal.onGetAllProducts(this.criterias);
+    this.modal.onGetAllProducts(this.criterias);
     this.criterias = [];
   }
 
@@ -62,6 +65,9 @@ export class FilterComponent implements OnInit {
         let inputFieldTypeValue = document.getElementById(
           'hidden' + i
         ) as HTMLInputElement;
+        let subGroupInputFieldTypeValue = document.getElementById(
+          'subGroupHidden' + i
+        ) as HTMLInputElement;
 
         let element = {
           key: selectFieldName.options[selectFieldName.selectedIndex].value,
@@ -69,23 +75,26 @@ export class FilterComponent implements OnInit {
             selectFilterType.options[selectFilterType.selectedIndex].value,
           value: inputFieldValue.value,
           orPredicate: inputFieldTypeValue.value === '0' ? false : true,
-          operatorGroup: 'ou' + i,
+          operatorGroup: subGroupInputFieldTypeValue.value,
         };
         this.criterias.push(element);
       }
     }
+    this.criterias.sort((a, b) => {
+      return a.operatorGroup.localeCompare(b.operatorGroup);
+    });
   }
 
   public close(): void {
     this.modalService.hide();
   }
 
-  public addSubGroup() {
+  public addSubGroup(parentId: string = 'operator0') {
     this.subGroupCompt = this.subGroupCompt + 1;
     const subGroupDiv = document.getElementById('subGroupDiv');
     const div = document.createElement('div');
-    div.id = 'subGroupDiv' + this.subGroupCompt;
     let id = 'subGroupDiv' + this.subGroupCompt;
+    div.id = id;
     div.style.marginLeft = '6px';
     div.style.marginTop = '3px';
 
@@ -113,7 +122,10 @@ export class FilterComponent implements OnInit {
     const span1 = document.createElement('span');
     span1.textContent = 'sous-groupe';
     button1.appendChild(span1);
-    button1.onclick = () => this.addSubGroup();
+    button1.onclick = () => this.addSubGroup(selectId);
+
+    //select de la division parent
+    let sel = document.getElementById(parentId) as HTMLSelectElement;
 
     //bouton d'ajout de règle
     const button2 = this.createButton(false);
@@ -121,7 +133,10 @@ export class FilterComponent implements OnInit {
     const span2 = document.createElement('span');
     span2.textContent = 'règle';
     button2.appendChild(span2);
-    button2.onclick = () => this.addRule(selectId);
+    let operatirGourp =
+      (sel.options[sel.selectedIndex].value === '0' ? 'ET' : 'OU') +
+      this.subGroupCompt;
+    button2.onclick = () => this.addRule(selectId, operatirGourp);
 
     //bouton de suppression de sous-groupe
     const button3 = this.createButton(true);
@@ -129,14 +144,26 @@ export class FilterComponent implements OnInit {
     button3.style.marginLeft = '15px';
     button3.onclick = () => this.deleteSubGroup(id);
 
+    //label pour l'operateur de sous groupe
+    const labelOperator = this.createLabel(
+      sel.options[sel.selectedIndex].value === '0' ? 'ET .' : 'OU',
+      sel.options[sel.selectedIndex].value === '0' ? 'blue' : 'green'
+    );
+
+    //label pour le nom du sousgroup
+    const labelName = this.createLabel('SubGroup' + this.subGroupCompt, 'blue');
+    labelName.style.marginLeft = '3px';
+    labelName.style.fontWeight = 'bold';
+    div.appendChild(labelOperator);
     div.appendChild(selectField);
     div.appendChild(button1);
     div.appendChild(button2);
     div.appendChild(button3);
+    div.appendChild(labelName);
     subGroupDiv?.appendChild(div);
   }
 
-  public addRule(ids: string) {
+  public addRule(ids: string, operatorGroup: string = 'ET0') {
     this.rulesCompt = this.rulesCompt + 1;
     let id = 'formDiv' + this.rulesCompt;
 
@@ -195,7 +222,14 @@ export class FilterComponent implements OnInit {
       'hidden'
     );
     inputField.appendChild(inputHidden);
-
+    //conservation de l'operateur du sous group associer
+    const subGoupInputHidden = this.createInput(
+      'subGroupHidden' + this.rulesCompt,
+      operatorGroup,
+      'hidden'
+    );
+    inputField.appendChild(subGoupInputHidden);
+    inputField.appendChild(inputHidden);
     //div4
     const inputField1 = document.createElement('div');
     inputField1.classList.add('form-group');
@@ -206,19 +240,18 @@ export class FilterComponent implements OnInit {
     button.onclick = () => this.deleteRule(id);
 
     //creation du label d'indication sur le type d'operateur d'une règle
-    const labelOperator = document.createElement('label') as HTMLLabelElement;
-    labelOperator.textContent =
-      sel.options[sel.selectedIndex].value === '0' ? 'ET' : 'OU';
-    labelOperator.setAttribute(
-      'style',
-      sel.options[sel.selectedIndex].value === '0'
-        ? 'color:blue;'
-        : 'color:green;'
+    const labelId = ids.replace('operator', '');
+    const labelOperator = this.createLabel(
+      (sel.options[sel.selectedIndex].value === '0' ? 'ET .SG' : 'OU SG') +
+        labelId,
+      sel.options[sel.selectedIndex].value === '0' ? 'blue' : 'green'
     );
+    labelOperator.id = labelId;
     //action de mise a jour du champ de valeur en fonction du type d'attribut
     selectList.onchange = () =>
       this.onSelectColumn(idInput, idSelect, idSelect2);
-    if (div!.childElementCount === 0) labelOperator.textContent = '!!!!';
+    if (div!.childElementCount === 0)
+      labelOperator.textContent = '!!!!  SG' + labelId;
     subDiv.appendChild(labelOperator);
     subDiv?.appendChild(selectField);
     subDiv?.appendChild(selectField1);
@@ -272,28 +305,45 @@ export class FilterComponent implements OnInit {
     let p = document.getElementById('query') as HTMLParagraphElement;
     if (p.style.display !== 'none') {
       let p = document.getElementById('query') as HTMLParagraphElement;
-      let content = 'SELECT * FROM ??? WHERE ';
+      let content = 'SELECT * FROM ??? WHERE (';
       this.setCriterias();
-
+      let operator = this.criterias[0].operatorGroup;
       for (let i = 0; i < this.criterias.length; i++) {
         const elt = this.criterias[i];
         if (i === 0) {
           content += elt.key + ' ' + elt.operation + ' `' + elt.value + '`';
         } else {
-          let op = elt.orPredicate ? 'OR' : 'AND';
-          content +=
-            ' ' +
-            op +
-            ' ' +
-            elt.key +
-            ' ' +
-            elt.operation +
-            ' `' +
-            elt.value +
-            '`';
+          let opG = elt.operatorGroup.toLowerCase().startsWith('ou')
+            ? 'OR'
+            : 'AND';
+          if (operator !== elt.operatorGroup) {
+            content +=
+              ') ' +
+              opG +
+              ' (' +
+              elt.key +
+              ' ' +
+              elt.operation +
+              ' `' +
+              elt.value +
+              '`';
+            operator = elt.operatorGroup;
+          } else {
+            let op = elt.orPredicate ? 'OR' : 'AND';
+            content +=
+              ' ' +
+              op +
+              ' ' +
+              elt.key +
+              ' ' +
+              elt.operation +
+              ' `' +
+              elt.value +
+              '`';
+          }
         }
       }
-      content += ';';
+      content += ');';
       p.textContent = content;
       this.criterias = [];
     }
@@ -405,5 +455,15 @@ export class FilterComponent implements OnInit {
     button.style.padding = '6px 8px';
     button.style.borderRadius = '4px';
     return button;
+  }
+
+  /**
+   * createLabel
+   */
+  public createLabel(text: string, color: string): HTMLLabelElement {
+    const labelOperator = document.createElement('label') as HTMLLabelElement;
+    labelOperator.textContent = text;
+    labelOperator.setAttribute('style', 'color:' + color + ';');
+    return labelOperator;
   }
 }
