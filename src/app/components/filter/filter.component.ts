@@ -1,10 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { catchError, map, Observable, of, startWith } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Product } from 'src/app/modeles/product.model';
-import { NotificationService } from 'src/app/services/notification.service';
-import { ProductService } from 'src/app/services/product.service';
-import { AppDataState, DataStateEnum } from 'src/app/states/product.state';
+import { AppDataState } from 'src/app/states/product.state';
 import {
   FILTER_DATE_TYPE,
   FILTER_NUMBER_TYPE,
@@ -41,7 +39,7 @@ export class FilterComponent implements OnInit {
       return;
     }
     //tous les models doivent avoir comme methode record une methi=ode avec un nom pareil
-    this.modal.onGetAllProducts(this.criterias);
+    // this.modal.onGetAllProducts(this.criterias);
     this.criterias = [];
   }
 
@@ -88,7 +86,8 @@ export class FilterComponent implements OnInit {
     const div = document.createElement('div');
     div.id = 'subGroupDiv' + this.subGroupCompt;
     let id = 'subGroupDiv' + this.subGroupCompt;
-    div.style.margin = '2px';
+    div.style.marginLeft = '6px';
+    div.style.marginTop = '3px';
 
     //select AND/OR
     const selectField = document.createElement('select');
@@ -100,30 +99,33 @@ export class FilterComponent implements OnInit {
     selectField.appendChild(AndOption);
     let selectId = 'operator' + this.subGroupCompt;
     selectField.id = selectId;
-
     //Option OR
     var OrOption = document.createElement('option');
     OrOption.value = '1';
     OrOption.text = 'OU';
     selectField.appendChild(OrOption);
 
+    this.addStyleToSelect(selectField, '10%');
+
     //bouton d'ajout de sous-groupe
-    const button1 = this.createButton('fa-plus');
+    const button1 = this.createButton(false);
+    button1.style.marginLeft = '3px';
     const span1 = document.createElement('span');
     span1.textContent = 'sous-groupe';
     button1.appendChild(span1);
     button1.onclick = () => this.addSubGroup();
 
     //bouton d'ajout de règle
-    const button2 = this.createButton('fa-plus');
-    button2.style.marginLeft = '15px';
+    const button2 = this.createButton(false);
+    button2.style.marginLeft = '2px';
     const span2 = document.createElement('span');
     span2.textContent = 'règle';
     button2.appendChild(span2);
     button2.onclick = () => this.addRule(selectId);
 
     //bouton de suppression de sous-groupe
-    const button3 = this.createButton('fa-trash');
+    const button3 = this.createButton(true);
+    button3.textContent = 'del';
     button3.style.marginLeft = '15px';
     button3.onclick = () => this.deleteSubGroup(id);
 
@@ -147,7 +149,6 @@ export class FilterComponent implements OnInit {
     subDiv.id = id;
     //creation de la diision pour l'ajout du
     const selectField = document.createElement('div') as HTMLDivElement;
-    selectField.classList.add('form-group');
 
     //select pour les attributs du filtre
     var idSelect = 'colonne' + this.rulesCompt;
@@ -199,7 +200,8 @@ export class FilterComponent implements OnInit {
     const inputField1 = document.createElement('div');
     inputField1.classList.add('form-group');
     //boutton de suppression des champs de règles
-    const button = this.createButton('fa-trash');
+    const button = this.createButton(true);
+    button.textContent = 'del';
     inputField1.appendChild(button);
     button.onclick = () => this.deleteRule(id);
 
@@ -319,7 +321,21 @@ export class FilterComponent implements OnInit {
   ): HTMLInputElement {
     //creation d'un champ caché pour la conservation du ET ou OU
     const inputField = document.createElement('input') as HTMLInputElement;
-    inputField.classList.add('form-control');
+    //add style to input field
+    inputField.style.display = 'block';
+    inputField.style.width = '100%';
+    inputField.style.padding = '0.375rem 0.75rem';
+    inputField.style.fontSize = '1rem';
+    inputField.style.fontWeight = '400';
+    inputField.style.lineHeight = '1.5';
+    inputField.style.color = '#212529';
+    inputField.style.backgroundColor = '#fff';
+    inputField.style.backgroundClip = 'padding-box';
+    inputField.style.border = '1px solid #ced4da';
+    inputField.style.appearance = 'none';
+    inputField.style.borderRadius = '0.25rem';
+
+    // inputField.classList.add('filter-form-input');
     inputField.id = id;
     inputField.type = type;
     inputField.value = value;
@@ -334,8 +350,24 @@ export class FilterComponent implements OnInit {
     var selectList1 = document.createElement('select') as HTMLSelectElement;
     selectList1.name = name;
     selectList1.id = id;
-    selectList1.classList.add('form-control');
+    this.addStyleToSelect(selectList1, '100%');
     return selectList1;
+  }
+
+  /**
+   * addStyleToSelect
+   */
+  public addStyleToSelect(elt: HTMLSelectElement, size: string) {
+    elt.style.width = size;
+    elt.style.padding = '6px 8px';
+    elt.style.fontSize = '1rem';
+    elt.style.fontWeight = '400';
+    elt.style.lineHeight = '1.5';
+    elt.style.color = '#212529';
+    elt.style.backgroundColor = '#f1f1f1';
+    elt.style.backgroundClip = 'padding-box';
+    elt.style.border = '1px solid #4c91af';
+    elt.style.borderRadius = '0.25rem';
   }
 
   /**
@@ -364,17 +396,14 @@ export class FilterComponent implements OnInit {
   /**
    * createButton
    */
-  public createButton(icon: string): HTMLButtonElement {
+  public createButton(del: boolean): HTMLButtonElement {
     const button = document.createElement('button') as HTMLButtonElement;
-    button.classList.add('btn');
-    button.classList.add(
-      icon.endsWith('trash') ? 'btn-outline-danger' : 'btn-outline-primary'
-    );
-    button.classList.add('btn-sm');
-    const i = document.createElement('i');
-    i.classList.add('fa');
-    i.classList.add(icon);
-    button.appendChild(i);
+    button.style.marginInline = '2px';
+    button.style.backgroundColor = del ? '#dc3545' : 'white';
+    button.style.border = del ? 'none' : '1px solid #3141ed';
+    button.style.color = del ? 'white' : 'black';
+    button.style.padding = '6px 8px';
+    button.style.borderRadius = '4px';
     return button;
   }
 }

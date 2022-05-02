@@ -1,8 +1,8 @@
-<div class="modal-header">
-  <h4 class="modal-title">Filtrer</h4>
+<div class="filter-modal-header">
+  <h4>Filtrer</h4>
   <button
     type="button"
-    class="close btn btn-danger"
+    class="filter-modal-close"
     aria-label="Close"
     (click)="close()"
   >
@@ -10,33 +10,30 @@
   </button>
 </div>
 
-<div class="modal-body">
-  <div class="container">
+<div class="filter-modal-body">
+  <div>
     <form>
-      <div style="margin-bottom: -16px">
-        <select style="margin-right: 15px" id="operator0">
+      <div class="filter-div">
+        <select style="margin-right: 2px" id="operator0" class="filter-select">
           <option value="0" selected>ET</option>
           <option value="1">OU</option>
         </select>
         <button
-          class="btn btn-outline-primary btn-sm"
+          class="filter-btn filter-btn-success"
           (click)="addSubGroup()"
           style="margin-left: 2px"
         >
-          <li class="fa fa-plus"></li>
           <span>sous-groupe</span>
         </button>
         <button
-          class="btn btn-outline-primary btn-sm m-3"
+          class="filter-btn filter-btn-success"
           (click)="addRule('operator0')"
         >
-          <li class="fa fa-plus"></li>
           <span>règle</span>
         </button>
       </div>
       <!-- sous-groupe-->
       <div id="subGroupDiv"></div>
-
       <!-- règles-->
       <div id="formDiv"></div>
     </form>
@@ -46,23 +43,29 @@
   </div>
 </div>
 
-<div class="modal-footer">
+<div class="filter-modal-footer">
   <button
     type="button"
-    class="btn btn-secondary btn-brand"
+    class="filter-btn filter-btn-success filter-bg-dark"
     id="btnbtn"
     (click)="hide()"
   >
     <span>Hide Query</span>
   </button>
 
-  <button type="button" class="btn btn-danger btn-brand" (click)="close()">
-    <i class="fa fa-times"></i>
+  <button
+    type="button"
+    class="filter-btn filter-btn-success filter-bg-red"
+    (click)="close()"
+  >
     <span>Annuler</span>
   </button>
 
-  <button type="button" class="btn btn-primary btn-brand" (click)="filter()">
-    <i class="fa fa-filter"></i>
+  <button
+    type="button"
+    class="filter-btn filter-btn-success filter-bg-blue"
+    (click)="filter()"
+  >
     <span>Filtrer</span>
   </button>
 </div>

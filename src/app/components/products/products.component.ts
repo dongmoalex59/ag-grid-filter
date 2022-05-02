@@ -68,7 +68,7 @@ export class ProductsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.onGetAllProducts();
+    // this.onGetAllProducts();
   }
 
   public onGridReady(params: any): void {
