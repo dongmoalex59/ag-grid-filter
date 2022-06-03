@@ -43,14 +43,6 @@ export const FILTER_TEXT_TYPE: any[] = [
 
 export const FILTER_DATE_TYPE: any[] = [
   {
-    name: 'Contient',
-    value: '%',
-  },
-  {
-    name: 'Ne Contient pas',
-    value: '!',
-  },
-  {
     name: 'Egale à',
     value: '=',
   },
